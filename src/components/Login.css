@@ -1,0 +1,93 @@
+/* Dark futuristic login styles */
+.login-bg{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: radial-gradient(ellipse at top left, #071229 0%, #03040a 40%), linear-gradient(180deg, rgba(125,92,255,0.06), transparent);
+  position:relative;
+  overflow:hidden;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  color: #e6eef8;
+}
+
+.login-card{
+  width: min(420px, 92%);
+  background: rgba(10,12,20,0.55);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 8px 30px rgba(3,6,23,0.7), inset 0 1px 0 rgba(255,255,255,0.02);
+  backdrop-filter: blur(8px) saturate(120%);
+  border: 1px solid rgba(125,92,255,0.12);
+  position:relative;
+  overflow:hidden;
+}
+
+.logo{
+  font-weight:800;
+  letter-spacing:2px;
+  color: #bfbaff;
+  font-size:20px;
+  background: linear-gradient(90deg,#9f7cff,#5bd0ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.login-card h2{ margin: 6px 0 0 0; font-size:20px; color:#fff; }
+.login-card .sub{ color: #9fb0d6; margin-bottom:18px; font-size:13px }
+
+.field{ display:block; position:relative; margin-bottom:12px }
+.field input{
+  width:100%;
+  padding:12px 44px 12px 12px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.06);
+  background: rgba(8,10,16,0.45);
+  color: #e6eef8;
+  outline:none;
+  transition: box-shadow .18s ease, transform .12s;
+}
+.field input:focus{ box-shadow: 0 6px 22px rgba(125,92,255,0.06); transform: translateY(-1px) }
+.field span{ position:absolute; right:12px; top:50%; transform:translateY(-50%); color:#8fa6cf; font-size:12px }
+
+.show-btn{
+  position:absolute;
+  right:8px;
+  top:8px;
+  background:none;
+  border:none;
+  color:#9fb0d6;
+  cursor:pointer;
+  font-size:12px;
+  padding:6px 8px;
+  border-radius:6px;
+}
+
+.signin-btn{
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  border-radius:10px;
+  background: linear-gradient(90deg,#7d5cff,#2bd4ff);
+  border:none;
+  color:#061026;
+  font-weight:700;
+  font-size:15px;
+  cursor:pointer;
+  box-shadow: 0 8px 30px rgba(125,92,255,0.14);
+}
+
+.alt{ display:flex; justify-content:space-between; margin-top:12px; font-size:13px; color:#9fb0d6 }
+.alt a{ color:#9fb0d6; text-decoration:none }
+
+.neon-lines{ position:absolute; inset:0; pointer-events:none; opacity:0.35 }
+.neon-lines div{ position:absolute; width:400px; height:1px; background:linear-gradient(90deg,#7d5cff,#2bd4ff); top:10%; left:-20%; transform:skewX(-20deg) }
+.neon-lines div:nth-child(2){ top:50%; left:-30%; transform:skewX(-12deg) }
+.neon-lines div:nth-child(3){ top:85%; left:-10%; transform:skewX(-6deg) }
+
+/* small screens */
+@media (max-width:420px){
+  .login-card{ padding:20px; border-radius:12px }
+  .login-card h2{ font-size:18px }
+}
