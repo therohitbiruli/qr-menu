@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useAuth } from '../AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
+import { sendSignInLinkToEmail } from "firebase/auth";
+import { auth } from "../firebase";
+
 
 // Icon components
 const MailIcon = () => (
@@ -103,6 +106,30 @@ export default function Login() {
         setLoading(false);
     }
 
+    const sendEmailOtp = async () => {
+        if (!email) {
+          toast.error("Please enter your email");
+          return;
+        }
+      
+        const actionCodeSettings = {
+          url: "http://localhost:3000/finishSignIn",
+          handleCodeInApp: true,
+        };
+      
+        try {
+          setLoading(true);
+          await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+          localStorage.setItem("emailForSignIn", email);
+          toast.success("OTP link sent to your email");
+        } catch (error) {
+          toast.error(error.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+      
+
     return (
         <div className="min-h-screen animated-gradient-bg particles-bg flex items-center justify-center p-4">
             <Toaster position="bottom-center" />
@@ -156,6 +183,14 @@ export default function Login() {
                             />
                             <label htmlFor="email" className="input-label">Email address</label>
                         </div>
+                        <button
+  type="button"
+  onClick={sendEmailOtp}
+  disabled={loading}
+  className="btn-premium mt-3 bg-gradient-to-r from-indigo-500 to-purple-500"
+>
+  {loading ? "Sending OTP…" : "Sign in with Email OTP"}
+</button>
 
                         {/* Password Input */}
                         <div className="input-group">

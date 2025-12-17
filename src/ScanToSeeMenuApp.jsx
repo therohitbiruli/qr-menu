@@ -8,6 +8,9 @@ import LiveOrders from './LiveOrders';
 import ManagementPanel from './ManagementPanel';
 import { Menu, Eye, X } from './Icons';
 import { SAMPLE_MENU_DATA } from './seedData';
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+import ContactUs from "./pages/ContactUs";
 
 
 import { QRCodeCanvas } from 'qrcode.react';
@@ -237,11 +240,12 @@ const ScanToSeeMenuApp = () => {
                 const data = docSnap.data();
                 setMenuItems(data.items || []);
                 setCategories(data.categories || ["Appetizers", "Main Courses", "Breads", "Rice", "Desserts"]);
-                setSelectedRestaurant(data.restaurantInfo || { name: "My Restaurant", description: "Delicious food." });
+                setSelectedRestaurant(data.restaurantInfo || { name: "", description: "" });
             } else {
                 setCategories(["Appetizers", "Main Courses", "Breads", "Rice", "Desserts"]);
-                setSelectedRestaurant({ name: "My Restaurant", description: "Delicious food." });
+                setSelectedRestaurant({ name: "", description: "" });
             }
+            
         };
         loadData();
     }, [currentUser]);
@@ -276,15 +280,32 @@ const ScanToSeeMenuApp = () => {
     const updateRestaurant = (updatedRestaurant) => { setSelectedRestaurant(updatedRestaurant); };
     const handleSave = async () => {
         if (!currentUser) return;
+    
+        // 🔒 MANDATORY VALIDATION
+        if (!selectedRestaurant?.name?.trim()) {
+            toast.error("Restaurant name is required");
+            return;
+        }
+    
+        if (!selectedRestaurant?.description?.trim()) {
+            toast.error("Restaurant description is required");
+            return;
+        }
+    
         try {
             await setDoc(doc(db, "menus", currentUser.uid), {
                 items: menuItems,
                 categories: categories,
                 restaurantInfo: selectedRestaurant
             });
-            toast.success('Menu saved successfully!');
-        } catch (e) { console.error("Error saving document: ", e); toast.error('Error saving menu.'); }
+    
+            toast.success("Menu saved successfully!");
+        } catch (e) {
+            console.error("Error saving document: ", e);
+            toast.error("Error saving menu.");
+        }
     };
+    
     const handleOnDragEnd = (result) => {
         if (!result.destination) return;
         const items = Array.from(categories);
@@ -478,6 +499,14 @@ const ScanToSeeMenuApp = () => {
             loadSampleData
         };
         switch (currentView) {
+            case "privacy":
+                return <PrivacyPolicy onBack={() => setCurrentView("panel")} />;
+              
+                case "terms":
+                    return <Terms onBack={() => setCurrentView("panel")} />;
+                  case "contact":
+  return <ContactUs onClose={() => setCurrentView("panel")} />;
+
             case 'landing': return renderLandingPage();
             case 'panel': return <ManagementPanel {...panelProps} />;
             case 'orders': return <LiveOrders liveOrders={liveOrders} setCurrentView={setCurrentView} acceptOrder={acceptOrder} rejectOrder={rejectOrder} serveOrder={serveOrder} />;

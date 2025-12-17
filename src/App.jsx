@@ -7,6 +7,14 @@ import CustomerMenu from "./CustomerMenu";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import { AuthProvider, useAuth } from "./AuthContext";
+import FinishSignIn from "./pages/FinishSignIn";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+import Contact from "./pages/ContactUs.jsx";
+
+
+<Route path="/finishSignIn" element={<FinishSignIn />} />
+
 
 const PrivateRoute = ({ children }) => {
   const { currentUser } = useAuth();
@@ -32,6 +40,9 @@ const App = () => {
     <AuthProvider>
       <Router>
         <Routes>
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+<Route path="/terms" element={<Terms />} />
+<Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 

@@ -101,6 +101,7 @@ const ManagementPanel = (props) => {
     const { theme, toggleTheme } = useTheme();
 
     const [activeSection, setActiveSection] = useState('overview');
+    const [restaurantError, setRestaurantError] = useState("");
     const [showProfileModal, setShowProfileModal] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -252,14 +253,31 @@ const ManagementPanel = (props) => {
             <div className="bg-white rounded-xl border border-gray-200 p-6">
                 {editingRestaurant ? (
                     <div className="space-y-4">
+                        {restaurantError && (
+  <div className="px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm font-medium">
+    ⚠️ This section is required (Restaurant name & description)
+  </div>
+)}
+
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">Restaurant Name</label>
+                            {restaurantError && (
+  <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm font-medium">
+    ⚠️ {restaurantError}
+  </div>
+)}
+
                             <input
                                 type="text"
                                 placeholder="Restaurant Name"
                                 value={selectedRestaurant?.name || ""}
                                 onChange={(e) => props.setSelectedRestaurant({ ...selectedRestaurant, name: e.target.value })}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
+                                className={`w-full px-4 py-3 border rounded-lg transition-all outline-none
+                                ${!selectedRestaurant?.name?.trim() && restaurantError
+                                  ? "border-red-500 focus:ring-2 focus:ring-red-500"
+                                  : "border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent"}
+                              `}
+                              
                             />
                         </div>
                         <div>
@@ -268,17 +286,33 @@ const ManagementPanel = (props) => {
                                 placeholder="Describe your restaurant..."
                                 value={selectedRestaurant?.description || ""}
                                 onChange={(e) => props.setSelectedRestaurant({ ...selectedRestaurant, description: e.target.value })}
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all outline-none"
-                                rows={4}
+                                className={`w-full px-4 py-3 border rounded-lg outline-none transition-all
+                                ${restaurantError && !selectedRestaurant?.description?.trim()
+                                  ? "border-red-500 focus:ring-2 focus:ring-red-500"
+                                  : "border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-transparent"}
+                              `}
+                                                              rows={4}
                             />
                         </div>
                         <div className="flex gap-3 pt-2">
-                            <button
-                                onClick={() => { updateRestaurant(selectedRestaurant); setEditingRestaurant(false); }}
-                                className="px-5 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
-                            >
-                                Save Changes
-                            </button>
+                        <button
+  onClick={() => {
+    if (!selectedRestaurant?.name?.trim() || !selectedRestaurant?.description?.trim()) {
+      setRestaurantError("Restaurant name and description are required");
+      toast.error("Please complete restaurant information");
+      return;
+    }
+
+    setRestaurantError("");
+    setEditingRestaurant(false);
+    handleSave();
+  }}
+  className="px-5 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+>
+  Save Changes
+</button>
+
+
                             <button
                                 onClick={() => setEditingRestaurant(false)}
                                 className="px-5 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
@@ -331,7 +365,7 @@ const ManagementPanel = (props) => {
         <div className="fade-in">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Categories</h2>
             <div className="bg-white rounded-xl border border-gray-200 p-6">
-                <div className="flex gap-3 mb-6">
+                <div className="flex flex-col sm:flex-row gap-3 mb-6">
                     <input
                         value={newCategoryInput}
                         onChange={(e) => setNewCategoryInput(e.target.value)}
@@ -355,8 +389,8 @@ const ManagementPanel = (props) => {
                             }
                             setNewCategoryInput("");
                         }}
-                        className="inline-flex items-center gap-2 px-5 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
-                    >
+                        className="w-full sm:w-auto inline-flex justify-center items-center gap-2 px-5 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors"
+                        >
                         <Plus className="w-4 h-4" /> Add
                     </button>
                 </div>
@@ -633,7 +667,32 @@ const ManagementPanel = (props) => {
                     >
                         <LogoutIcon />
                         <span>Back to Home</span>
+
                     </button>
+                    <div className="mt-3 border-t border-gray-200 pt-3 space-y-1">
+  <button
+    onClick={() => setCurrentView("privacy")}
+    className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg"
+  >
+    Privacy Policy
+  </button>
+
+  <button
+    onClick={() => setCurrentView("terms")}
+    className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg"
+  >
+    Terms of Service
+  </button>
+
+  <button
+  onClick={() => setCurrentView("contact")}
+  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"
+>
+  📩 Contact Us
+</button>
+
+</div>
+
                 </div>
             </aside>
 
